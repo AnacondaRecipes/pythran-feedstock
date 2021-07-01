@@ -9,7 +9,8 @@ source:
   sha256: a317f91e2aade9f6550dc3bf40b5caeb45b7e012daf27e2b3e4ad928edb01667
 
 build:
-  number: 1
+  number: 2
+  skip: True  # [win32]
   script:
     # prevent d1trimfile option being added which clang-cl does not understand.
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
@@ -25,7 +26,6 @@ build:
 requirements:
   build:
     - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - {{ compiler('cxx') }}  # [not win]
     - clang                  # [win]
@@ -35,6 +35,8 @@ requirements:
     - pip
     - numpy
     - pytest-runner
+    - setuptools
+    - wheel
   run:
     - {{ compiler('cxx') }}  # [not win]
     - clang                  # [win]
@@ -48,6 +50,7 @@ requirements:
     - six
     - beniget 0.3
     - xsimd
+    - openblas  # [osx]
 
 test:
   files:
