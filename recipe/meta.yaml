@@ -48,9 +48,11 @@ requirements:
     - six
     - beniget 0.3
     - xsimd
-    - openblas  # [osx]
 
 test:
+  requires:                           # [osx]
+    # default to testing openblas
+    - openblas-devel {{ openblas }}   # [osx]
   files:
     - dprod.py
     - simple_numexpr.py
