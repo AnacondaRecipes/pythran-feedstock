@@ -10,7 +10,6 @@ source:
 
 build:
   number: 2
-  skip: True  # [win32]
   script:
     # prevent d1trimfile option being added which clang-cl does not understand.
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
