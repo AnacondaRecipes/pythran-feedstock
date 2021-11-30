@@ -49,10 +49,12 @@ test:
   requires:                           # [osx]
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [osx]
+    - pip
   files:
     - dprod.py
     - simple_numexpr.py
   commands:
+    - pip check
     - set "SRC_DIR="  # [win]
     - pythran -v dprod.py
     - python -c "import dprod"
