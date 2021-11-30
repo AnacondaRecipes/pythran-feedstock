@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 9dac8e1d50f33d4676003e350b1f0c878ce113e6f907920e92dc103352cac5bf
+  sha256: c4853430e99dc382b8ed11e6eed3a196a571b2f311db4be4cf7b28d6f6866c54
 
 build:
   number: 0
@@ -49,12 +49,10 @@ test:
   requires:                           # [osx]
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [osx]
-    - pip
   files:
     - dprod.py
     - simple_numexpr.py
   commands:
-    - pip check
     - set "SRC_DIR="  # [win]
     - pythran -v dprod.py
     - python -c "import dprod"
