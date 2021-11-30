@@ -40,10 +40,10 @@ requirements:
     - clangxx                # [win]
     - python
     - {{ pin_compatible('numpy') }}
-    - gast 0.5.*
+    - gast >=0.5
     - ply >=3.4
-    - beniget 0.4.*
-    - xsimd 7.6.*
+    - beniget >=0.4
+    - xsimd >=7.6
 
 test:
   requires:                           # [osx]
