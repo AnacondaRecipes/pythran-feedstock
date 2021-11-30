@@ -43,7 +43,7 @@ requirements:
     - gast >=0.5
     - ply >=3.4
     - beniget >=0.4
-    - xsimd >=7.6
+    - xsimd >=7.5
 
 test:
   requires:                           # [osx]
