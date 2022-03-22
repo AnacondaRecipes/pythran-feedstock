@@ -52,10 +52,12 @@ test:
   requires:                           # [osx]
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [osx]
+    - {{ compiler('c') }}  # [osx]
   files:
     - dprod.py
     - simple_numexpr.py
   commands:
+    - export CONDA_BUILD_SYSROOT="-isysroot /opt/MacOSX10.10.sdk" # [osx and x86_64]
     - set "SRC_DIR="  # [win]
     - pythran -v dprod.py
     - python -c "import dprod"
