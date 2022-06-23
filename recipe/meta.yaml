@@ -22,6 +22,7 @@ build:
     # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
     # conda will detect the written environment-path and replace it as appropriate for user installs;
     # note that we need r'...' for this due to paths like D:\bld\... where python would interpret \b.
+    # Seeking to 0 and overwriting without truncating only works, because the file is now longer than before.
     - "python -c \"with open('pythran\\pythran-win32.cfg', 'r+') as s: a=s.read(); s.seek(0); s.write(a.replace('include_dirs=', r'include_dirs=%PREFIX%/Library/include'))\""  # [win]
     # sanity check to ensure this is set correctly
     - type pythran\pythran-win32.cfg  # [win]
