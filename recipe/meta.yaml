@@ -58,6 +58,7 @@ test:
     - pip
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [osx]
+    - {{ compiler('c') }}  # [osx]
   files:
     - dprod.py
     - simple_numexpr.py
@@ -66,6 +67,7 @@ test:
     - export CBS="-isysroot $(xcrun --show-sdk-path)" # [osx]
     - export CFLAGS="${CFLAGS} ${CBS}"  # [osx]
     - export CXXFLAGS="${CXXFLAGS} ${CBS}"  # [osx]
+    - export LDFLAGS="${LDFLAGS} ${CBS}"  # [osx]
     - set "SRC_DIR="  # [win]
     - pythran -v dprod.py
     - python -c "import dprod"
