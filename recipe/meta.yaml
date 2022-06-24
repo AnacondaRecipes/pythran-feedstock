@@ -1,4 +1,4 @@
-{% set version = "0.9.11" %}
+{% set version = "0.10.0" %}
 
 package:
   name: pythran
@@ -6,17 +6,26 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: a317f91e2aade9f6550dc3bf40b5caeb45b7e012daf27e2b3e4ad928edb01667
-
+  sha256: 9dac8e1d50f33d4676003e350b1f0c878ce113e6f907920e92dc103352cac5bf
+  
 build:
-  number: 4
+  number: 0
   script:
     # prevent d1trimfile option being added which clang-cl does not understand.
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
     # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
     - set "SRC_DIR="   # [win]
+    # unvendor xsimd; use version packaged by conda
     - {{ PYTHON }} -c "import os, shutil; shutil.rmtree(os.path.join('pythran', 'xsimd'))"
     - "{{ PYTHON }} -c \"with open('setup.cfg', 'w') as s: s.write('[build_py]\\nno_xsimd=True')\""  # [not win]
+    # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
+    # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
+    # conda will detect the written environment-path and replace it as appropriate for user installs;
+    # note that we need r'...' for this due to paths like D:\bld\... where python would interpret \b.
+    # Seeking to 0 and overwriting without truncating only works, because the file is now longer than before.
+    - "python -c \"with open('pythran\\pythran-win32.cfg', 'r+') as s: a=s.read(); s.seek(0); s.write(a.replace('include_dirs=', r'include_dirs=%PREFIX%/Library/include'))\""  # [win]
+    # sanity check to ensure this is set correctly
+    - type pythran\pythran-win32.cfg  # [win]
     - {{ PYTHON }} -m pip install . --no-deps -vv
   entry_points:
     - pythran = pythran.run:run
@@ -40,16 +49,14 @@ requirements:
     - clangxx                # [win]
     - python
     - {{ pin_compatible('numpy') }}
-    - decorator
-    - gast 0.4
-    - networkx >=2
+    - gast >=0.5.0,<0.6.0
     - ply >=3.4
-    - six
-    - beniget 0.3
-    - xsimd
+    - beniget >=0.4.0,<0.5.0
+    - xsimd >=7.6,<7.7
 
 test:
-  requires:                           # [osx]
+  requires:
+    - pip
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [osx]
     - {{ compiler('c') }}  # [osx]
@@ -57,6 +64,7 @@ test:
     - dprod.py
     - simple_numexpr.py
   commands:
+    - pip check
     - export CBS="-isysroot $(xcrun --show-sdk-path)" # [osx]
     - export CFLAGS="${CFLAGS} ${CBS}"  # [osx]
     - export CXXFLAGS="${CXXFLAGS} ${CBS}"  # [osx]
@@ -77,7 +85,7 @@ test:
     - pythran.types
 
 about:
-  home: http://github.com/serge-sans-paille/pythran
+  home: https://github.com/serge-sans-paille/pythran
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE
