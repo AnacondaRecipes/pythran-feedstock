@@ -1,4 +1,4 @@
-{% set version = "0.10.0" %}
+{% set version = "0.11.0" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 9dac8e1d50f33d4676003e350b1f0c878ce113e6f907920e92dc103352cac5bf
+  sha256: 0b2cba712e09f7630879dff69f268460bfe34a6d6000451b47d598558a92a875
   
 build:
   number: 0
@@ -52,7 +52,7 @@ requirements:
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - xsimd >=7.6,<7.7
+    - xsimd >=8.0.5,<8.1
 
 test:
   requires:
@@ -70,6 +70,9 @@ test:
     - export CXXFLAGS="${CXXFLAGS} ${CBS}"  # [osx]
     - export LDFLAGS="${LDFLAGS} ${CBS}"  # [osx]
     - set "SRC_DIR="  # [win]
+    - pythran --version
+    - pythran --help
+    - pythran-config -vvv
     - pythran -v dprod.py
     - python -c "import dprod"
     - pythran -v simple_numexpr.py -DUSE_XSIMD -march=native  # [not (ppc64le or s390x or (osx and arm64))]
