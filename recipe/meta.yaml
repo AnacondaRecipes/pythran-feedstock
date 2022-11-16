@@ -1,4 +1,4 @@
-{% set version = "0.11.0" %}
+{% set version = "0.12.0" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 0b2cba712e09f7630879dff69f268460bfe34a6d6000451b47d598558a92a875
+  sha256: eff3dd0d3eebe57372f0d14f82985525e9bcdfb5b1d1010e1932cf9207060f9f
   
 build:
   number: 0
@@ -52,7 +52,7 @@ requirements:
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - xsimd >=8.0.5,<8.1
+    - xsimd >=8.0.5
 
 test:
   requires:
