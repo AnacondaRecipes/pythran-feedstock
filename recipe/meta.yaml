@@ -102,6 +102,8 @@ about:
   dev_url: https://github.com/serge-sans-paille/pythran
 
 extra:
+  skip-lints:
+    - compilers_must_be_in_build
   recipe-maintainers:
     - saraedum
     - serge-sans-paille
