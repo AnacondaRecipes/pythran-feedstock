@@ -1,4 +1,4 @@
-{% set version = "0.12.1" %}
+{% set version = "0.13.1" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 702c2701187cfb38f66c0c20cc85d04d0e156d260a8d92892da65947faa5360e
+  sha256: 8aad08162f010e5425a7b254dd68d83311b430bb29f9252dce2eff3ba39497dd
   
 build:
   number: 0
@@ -26,7 +26,7 @@ build:
     - "python -c \"with open('pythran\\pythran-win32.cfg', 'r+') as s: a=s.read(); s.seek(0); s.write(a.replace('include_dirs=', r'include_dirs=%PREFIX%/Library/include'))\""  # [win]
     # sanity check to ensure this is set correctly
     - type pythran\pythran-win32.cfg  # [win]
-    - {{ PYTHON }} -m pip install . --no-deps -vv
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   entry_points:
     - pythran = pythran.run:run
     - pythran-config = pythran.config:run
@@ -51,7 +51,7 @@ requirements:
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - xsimd 10.0.0
+    - xsimd 11.0.0
 
 test:
   requires:
