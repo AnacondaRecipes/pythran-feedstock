@@ -1,4 +1,4 @@
-{% set version = "0.13.1" %}
+{% set version = "0.14.0" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 8aad08162f010e5425a7b254dd68d83311b430bb29f9252dce2eff3ba39497dd
+  sha256: 42f3473946205964844eff7f750e2541afb2006d53475d708f5ff2d048db89bd
   
 build:
   number: 0
