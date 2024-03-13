@@ -57,7 +57,7 @@ test:
   requires:
     - pip
     # default to testing openblas
-    - openblas-devel {{ openblas }}   # [osx]
+    - openblas-devel {{ openblas }}   # [linux or osx]
     - {{ compiler('c') }}  # [osx]
   files:
     - dprod.py
