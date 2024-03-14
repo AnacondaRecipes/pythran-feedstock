@@ -39,7 +39,6 @@ requirements:
   host:
     - python
     - pip
-    - numpy
     - setuptools
     - wheel
   run:
@@ -47,7 +46,7 @@ requirements:
     - clang                  # [win]
     - clangxx                # [win]
     - python
-    - {{ pin_compatible('numpy') }}
+    - numpy
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
