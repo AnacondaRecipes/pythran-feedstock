@@ -1,4 +1,4 @@
-{% set version = "0.13.1" %}
+{% set version = "0.15.0" %}
 
 package:
   name: pythran
@@ -6,10 +6,11 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 8aad08162f010e5425a7b254dd68d83311b430bb29f9252dce2eff3ba39497dd
+  sha256: f9bc61bcb96df2cd4b578abc5a62dfb3fbb0b0ef02c264513dfb615c5f87871c
   
 build:
   number: 0
+  skip: true # [py<37]
   script:
     # prevent d1trimfile option being added which clang-cl does not understand.
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
@@ -17,7 +18,6 @@ build:
     - set "SRC_DIR="   # [win]
     # unvendor xsimd; use version packaged by conda
     - {{ PYTHON }} -c "import os, shutil; shutil.rmtree(os.path.join('pythran', 'xsimd'))"
-    - "{{ PYTHON }} -c \"with open('setup.cfg', 'w') as s: s.write('[build_py]\\nno_xsimd=True')\""  # [not win]
     # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
     # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
     # conda will detect the written environment-path and replace it as appropriate for user installs;
@@ -39,7 +39,6 @@ requirements:
   host:
     - python
     - pip
-    - numpy
     - setuptools
     - wheel
   run:
@@ -47,17 +46,18 @@ requirements:
     - clang                  # [win]
     - clangxx                # [win]
     - python
-    - {{ pin_compatible('numpy') }}
+    - numpy
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - xsimd 11.0.0
+    - setuptools # used in pythran.dist
+    - xsimd 12.1.1
 
 test:
   requires:
     - pip
     # default to testing openblas
-    - openblas-devel {{ openblas }}   # [osx]
+    - openblas-devel {{ openblas }}   # [linux or osx]
     - {{ compiler('c') }}  # [osx]
   files:
     - dprod.py
