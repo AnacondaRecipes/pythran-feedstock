@@ -1,4 +1,4 @@
-{% set version = "0.15.0" %}
+{% set version = "0.16.1" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: f9bc61bcb96df2cd4b578abc5a62dfb3fbb0b0ef02c264513dfb615c5f87871c
+  sha256: 861748c0f9c7d422b32724b114b3817d818ed4eab86c09781aa0a3f7ceabb7f9
   
 build:
   number: 0
@@ -16,8 +16,6 @@ build:
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
     # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
     - set "SRC_DIR="   # [win]
-    # unvendor xsimd; use version packaged by conda
-    - {{ PYTHON }} -c "import os, shutil; shutil.rmtree(os.path.join('pythran', 'xsimd'))"
     # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
     # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
     # conda will detect the written environment-path and replace it as appropriate for user installs;
@@ -51,7 +49,6 @@ requirements:
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
     - setuptools # used in pythran.dist
-    - xsimd 12.1.1
 
 test:
   requires:
