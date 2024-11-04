@@ -3,4 +3,6 @@ build_env_vars:
 
 channels:
   - https://staging.continuum.io/prefect/fs/clangdev-feedstock/pr4/0cf84db
+  - https://staging.continuum.io/prefect/fs/mkl_fft-feedstock/pr10/3c5014b
+  - https://staging.continuum.io/prefect/fs/mkl_random-feedstock/pr8/77506cb
   - https://staging.continuum.io/prefect/fs/numpy-feedstock/pr95/a5aec10
