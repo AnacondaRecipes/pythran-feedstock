@@ -16,6 +16,9 @@ build:
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
     # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
     - set "SRC_DIR="   # [win]
+    # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd, 
+    # with the same license, and this means we have to maintain only one package rather than two.
+    # Also, it only vendors it in in certain versions, not all.
     # Set compilers to clang-cl
     - set "CC=clang-cl.exe"  # [win]
     - set "CXX=clang-cl.exe" # [win]
