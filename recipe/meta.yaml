@@ -1,4 +1,4 @@
-{% set version = "0.15.0" %}
+{% set version = "0.16.1" %}
 
 package:
   name: pythran
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: f9bc61bcb96df2cd4b578abc5a62dfb3fbb0b0ef02c264513dfb615c5f87871c
+  sha256: 861748c0f9c7d422b32724b114b3817d818ed4eab86c09781aa0a3f7ceabb7f9
   
 build:
   number: 0
@@ -16,8 +16,13 @@ build:
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
     # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
     - set "SRC_DIR="   # [win]
-    # unvendor xsimd; use version packaged by conda
-    - {{ PYTHON }} -c "import os, shutil; shutil.rmtree(os.path.join('pythran', 'xsimd'))"
+    # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd, 
+    # with the same license, and this means we have to maintain only one package rather than two.
+    # Also, it only vendors it in in certain versions, not all.
+    # Set compilers to clang-cl
+    - set "CC=clang-cl.exe"  # [win]
+    - set "CXX=clang-cl.exe" # [win]
+    - set "LDFLAGS=" # [win]
     # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
     # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
     # conda will detect the written environment-path and replace it as appropriate for user installs;
@@ -33,7 +38,7 @@ build:
 
 requirements:
   build:
-    - {{ compiler('cxx') }}  # [not win]
+    - {{ compiler('cxx') }}
     - clang                  # [win]
     - clangxx                # [win]
   host:
@@ -42,7 +47,7 @@ requirements:
     - setuptools
     - wheel
   run:
-    - {{ compiler('cxx') }}  # [not win]
+    - {{ compiler('cxx') }}
     - clang                  # [win]
     - clangxx                # [win]
     - python
@@ -50,25 +55,23 @@ requirements:
     - gast >=0.5.0,<0.6.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - setuptools # used in pythran.dist
-    - xsimd 12.1.1
+    - setuptools <74 # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
 
 test:
   requires:
     - pip
     # default to testing openblas
     - openblas-devel {{ openblas }}   # [linux or osx]
-    - {{ compiler('c') }}  # [osx]
   files:
     - dprod.py
     - simple_numexpr.py
   commands:
     - pip check
-    - export CBS="-isysroot $(xcrun --show-sdk-path)" # [osx]
-    - export CFLAGS="${CFLAGS} ${CBS}"  # [osx]
-    - export CXXFLAGS="${CXXFLAGS} ${CBS}"  # [osx]
-    - export LDFLAGS="${LDFLAGS} ${CBS}"  # [osx]
     - set "SRC_DIR="  # [win]
+    # Set compilers to clang-cl
+    - set "CC=clang-cl.exe"  # [win]
+    - set "CXX=clang-cl.exe" # [win]
+    - set "LDFLAGS=" # [win]
     - pythran --version
     - pythran --help
     - pythran-config -vvv
