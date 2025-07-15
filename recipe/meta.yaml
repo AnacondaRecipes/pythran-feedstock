@@ -7,6 +7,9 @@ package:
 source:
   url: https://pypi.org/packages/source/p/pythran/pythran-{{ version }}.tar.gz
   sha256: 5c003e8cbedf6dbb68c2869c49fc110ce8b5e8982993078a4a819f1dadc4fc6a
+  # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd, 
+  # with the same license, and this means we have to maintain only one package rather than two.
+  # Also, it only vendors it in in certain versions, not all.
 
 build:
   number: 0
@@ -32,7 +35,7 @@ requirements:
     - setuptools
   run:
     - {{ compiler('cxx') }}
-    - gxx                    # [linux]
+    - clang                  # [win]
     - clangxx                # [win]
     - python
     - numpy
@@ -49,7 +52,15 @@ test:
   files:
     - dprod.py
     - simple_numexpr.py
-  commands:
+  commands:    
+    # prevent d1trimfile option being added which clang-cl does not understand.
+    # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
+    # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
+    - set "SRC_DIR="   # [win]
+    # Set compilers to clang-cl
+    - set "CC=clang-cl.exe"  # [win]
+    - set "CXX=clang-cl.exe" # [win]
+    - set "LDFLAGS=" # [win]
     - pip check
     - pythran --version
     - pythran --help
