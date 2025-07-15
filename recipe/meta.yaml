@@ -1,28 +1,17 @@
-{% set version = "0.16.1" %}
+{% set version = "0.18.0" %}
 
 package:
   name: pythran
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
-  sha256: 861748c0f9c7d422b32724b114b3817d818ed4eab86c09781aa0a3f7ceabb7f9
-  
+  url: https://pypi.org/packages/source/p/pythran/pythran-{{ version }}.tar.gz
+  sha256: 5c003e8cbedf6dbb68c2869c49fc110ce8b5e8982993078a4a819f1dadc4fc6a
+
 build:
   number: 0
-  skip: true # [py<37]
+  skip: true  # [py<37]
   script:
-    # prevent d1trimfile option being added which clang-cl does not understand.
-    # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
-    # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
-    - set "SRC_DIR="   # [win]
-    # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd, 
-    # with the same license, and this means we have to maintain only one package rather than two.
-    # Also, it only vendors it in in certain versions, not all.
-    # Set compilers to clang-cl
-    - set "CC=clang-cl.exe"  # [win]
-    - set "CXX=clang-cl.exe" # [win]
-    - set "LDFLAGS=" # [win]
     # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
     # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
     # conda will detect the written environment-path and replace it as appropriate for user installs;
@@ -37,25 +26,20 @@ build:
     - pythran-config = pythran.config:run
 
 requirements:
-  build:
-    - {{ compiler('cxx') }}
-    - clang                  # [win]
-    - clangxx                # [win]
   host:
     - python
     - pip
     - setuptools
-    - wheel
   run:
     - {{ compiler('cxx') }}
-    - clang                  # [win]
+    - gxx                    # [linux]
     - clangxx                # [win]
     - python
     - numpy
-    - gast >=0.5.0,<0.6.0
+    - gast >=0.6.0,<0.7.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - setuptools <74 # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
+    - setuptools
 
 test:
   requires:
@@ -67,11 +51,6 @@ test:
     - simple_numexpr.py
   commands:
     - pip check
-    - set "SRC_DIR="  # [win]
-    # Set compilers to clang-cl
-    - set "CC=clang-cl.exe"  # [win]
-    - set "CXX=clang-cl.exe" # [win]
-    - set "LDFLAGS=" # [win]
     - pythran --version
     - pythran --help
     - pythran-config -vvv
@@ -95,7 +74,6 @@ about:
   license_family: BSD
   license_file: LICENSE
   summary: a claimless python to c++ converter
-
   description: |
     Pythran is an ahead of time compiler for a subset of the Python language,
     with a focus on scientific computing. It takes a Python module annotated
