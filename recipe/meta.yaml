@@ -7,12 +7,12 @@ package:
 source:
   url: https://pypi.org/packages/source/p/pythran/pythran-{{ version }}.tar.gz
   sha256: 5c003e8cbedf6dbb68c2869c49fc110ce8b5e8982993078a4a819f1dadc4fc6a
-  # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd, 
+  # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd,
   # with the same license, and this means we have to maintain only one package rather than two.
   # Also, it only vendors it in in certain versions, not all.
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<37]
   script:
     # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
@@ -35,41 +35,40 @@ requirements:
     - setuptools
   run:
     - {{ compiler('cxx') }}
-    - clang                  # [win]
-    - clangxx                # [win]
+    - clang  # [win]
+    - clangxx  # [win]
     - python
     - numpy
     - gast >=0.6.0,<0.7.0
     - ply >=3.4
     - beniget >=0.4.0,<0.5.0
-    - setuptools <74 # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
+    - setuptools <74  # used in pythran.dist. distutils.msvccompiler removed in recent setuptools
 
 test:
   requires:
     - pip
     # default to testing openblas
-    - openblas-devel {{ openblas }}   # [linux or osx]
+    - openblas-devel {{ openblas }}  # [linux or osx]
   files:
     - dprod.py
     - simple_numexpr.py
-  commands:    
+  commands:
     # prevent d1trimfile option being added which clang-cl does not understand.
     # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
     # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
-    - set "SRC_DIR="   # [win]
+    - set "SRC_DIR="  # [win]
     # Set compilers to clang-cl
     - set "CC=clang-cl.exe"  # [win]
-    - set "CXX=clang-cl.exe" # [win]
-    - set "LDFLAGS=" # [win]
+    - set "CXX=clang-cl.exe"  # [win]
+    - set "LDFLAGS="  # [win]
     - pip check
     - pythran --version
     - pythran --help
     - pythran-config -vvv
     - pythran -v dprod.py
     - python -c "import dprod"
-    - pythran -v simple_numexpr.py -DUSE_XSIMD -march=native  # [not (ppc64le or s390x or (osx and arm64))]
-    - pythran -v simple_numexpr.py -DUSE_XSIMD                # [osx and arm64]
-    - pythran -v simple_numexpr.py                            # [ppc64le or s390x]
+    - pythran -v simple_numexpr.py -DUSE_XSIMD -march=native  # [not (osx and arm64)]
+    - pythran -v simple_numexpr.py -DUSE_XSIMD  # [osx and arm64]
     - python -c "import simple_numexpr"
   imports:
     - omp  # [not win]
