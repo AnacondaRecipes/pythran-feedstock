@@ -1,11 +1,12 @@
+{% set name = "pythran" %}
 {% set version = "0.18.1" %}
 
 package:
-  name: pythran
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/p/pythran/pythran-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 8803ed948bf841a11bbbb10472a8ff6ea24ebd70e67c3f77b77be3db900eccfe
   # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd,
   # with the same license, and this means we have to maintain only one package rather than two.
@@ -30,18 +31,20 @@ build:
 
 requirements:
   host:
-    - python
     - pip
+    - python
     - setuptools >=62
+    - wheel
   run:
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
     - clang  # [win]
     - clangxx  # [win]
     - python
     - numpy
-    - gast >=0.6.0,<0.7.dev0
+    - gast >=0.6.0,<0.7
     - ply >=3.4
-    - beniget >=0.4.0,<0.5.dev0
+    - beniget >=0.4.0,<0.5
     - setuptools
 
 test:
@@ -89,7 +92,7 @@ about:
     with a focus on scientific computing. It takes a Python module annotated
     with a few interface description and turns it into a native Python module
     with the same interface, but (hopefully) faster.
-  doc_url: https://pythran.readthedocs.io/
+  doc_url: https://pythran.readthedocs.io
   dev_url: https://github.com/serge-sans-paille/pythran
 
 extra:
