@@ -1,5 +1,5 @@
 {% set name = "pythran" %}
-{% set version = "0.18.1" %}
+{% set version = "0.19.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 8803ed948bf841a11bbbb10472a8ff6ea24ebd70e67c3f77b77be3db900eccfe
+  sha256: 18a096daa8b4bbe3ace06ce5d7325be5ff57aec4cf67b91834cf1b757b3e5392
   # Note that we leave xsimd vendored-in, because pythran is the only package that uses xsimd,
   # with the same license, and this means we have to maintain only one package rather than two.
   # Also, it only vendors it in in certain versions, not all.
@@ -33,8 +33,7 @@ requirements:
   host:
     - pip
     - python
-    - setuptools >=62
-    - wheel
+    - setuptools <60  # [py<312]
   run:
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
