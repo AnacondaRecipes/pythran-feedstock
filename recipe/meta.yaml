@@ -33,8 +33,7 @@ requirements:
   host:
     - pip
     - python
-    - setuptools <60  # [py<312]
-    - setuptools >=62  # [py>=312]
+    - setuptools >=62
     - wheel
   run:
     - {{ stdlib('c') }}
